@@ -1,0 +1,35 @@
+extends layout
+
+block content
+  h1= title
+  p Welcome to #{title}
+  button(id="button") a
+  div(id="output")
+
+  script(type="text/javascript")
+    $(function() {
+      // socket の生成
+      var socket = io.connect('/');
+      //remote_socketの生成
+      // var socket2 = io.connect('http://localhost:3002');
+      var socket2 = io.connect('http://ec2-54-248-162-211.ap-northeast-1.compute.amazonaws.com:3002');
+
+      // 送信
+      $('#button').click(function() {
+        var message = "aaaaaaaa";
+        socket.emit("msg", message);
+      });
+
+      // 受信
+      socket.on('message', function(obj) {
+        console.log(obj);
+        $('#output').text(obj);
+      });
+
+      // 受信
+      socket2.on('remote_message', function(obj) {
+        socket.emit("remote_msg", obj);
+        $('#output').text(obj);
+      });
+
+    });
